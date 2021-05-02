@@ -1,0 +1,71 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block msg %}
+{% if messages %}
+{% for message in messages %}
+{% endfor %}
+<div {% if message.tags %}  class="alert alert-{{message.tags}} aler-dismissible fade show" {% endif %}>
+
+<strong>{{message}}</strong>
+<button type="button" class="close" data-dismiss='alert' aria-label="close"> <span aria-hidden="true"> &times;</span></button>
+</div>
+{% endif %}
+{% endblock msg %}
+
+{% block side %}
+ <div class="col-sm-2 text-white my-5 text-center">  
+ <h4 class="my-5"> Profile </h4>
+<h5>{{ full_name }}</h5>
+{% for group in groups %}
+<p> {{group.name }}</p>
+{% endfor %}
+
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="col-sm-10">
+<h3 class="text-white my-5"> Dashboard</h3>
+<h4 class" text-center alert alert-info mt=3 "> Show post</h4>
+<a href="{% url 'addpost' %}" class="btn btn-success my-2" >Add Post</a>
+
+<!-- table -->
+{% if posts %}
+    <table class="table table-hover bg-primary">
+    <thead class="thead-dark">
+        <tr class="text-center">
+        <th scope="col" style="width:2%">ID</th>
+        <th scope="col"style="width:28%" >Tittle</th>
+        <th scope="col" style="width:55%" >Description</th>
+        <th scope="col" style="width:15%" >Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for post in posts%}
+        <tr>
+        <th scope="row"{{post.id}</th>
+        <td>{{post.title}}</td>
+        <td>{{post.Desc}}</td>
+        <td class ="text-center"> 
+        <a href="{% url 'updatepost' post.id %}" class="btn btn-warning btn-sm">Edit</a> 
+        {% if perms.app.delete_post %}
+        <form  method="post" class="d-inline" action=" {% url 'deletepost' post.id %}">
+        {% csrf_token %}
+        <input type="submit" class="btn btn-danger btn-sm" value="Delete">
+        </form>
+        {% endif %}
+        </td>
+        </tr>
+    {% endfor %}    
+    </tbody>
+    </table>
+   {% else %} 
+   <h5> No Record Founds</h5>
+   {% endif %}  
+
+</div>
+ 
+ 
+
+{% endblock content %} 
